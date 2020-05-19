@@ -113,9 +113,7 @@ void runtimePatchMain(void*){
         (void**) &nnFsMountRomImpl
     );
 
-#ifndef NDEBUG
     skyline::logger::s_Instance->StartThread(); // start logging thread
-#endif
 
     // wait for rom to become available
     /*while(!nn::fs::CanMountRomForDebug()){
@@ -132,7 +130,6 @@ void runtimePatchMain(void*){
     skyline::TcpLogger::LogFormat("[runtimePatchMain] Mounted ROM (0x%x)", rc);
     */
 
-#ifndef NDEBUG
     skyline::logger::s_Instance->LogFormat("[runtimePatchMain] text: 0x%" PRIx64 " | rodata: 0x%" PRIx64 " | data: 0x%" PRIx64 " | bss: 0x%" PRIx64 " | heap: 0x%" PRIx64, 
         skyline::utils::g_MainTextAddr,
         skyline::utils::g_MainRodataAddr,
@@ -143,7 +140,6 @@ void runtimePatchMain(void*){
 
     skyline::utils::SafeTaskQueue *taskQueue = new skyline::utils::SafeTaskQueue(100);
     taskQueue->startThread(20, 3, 0x4000);
-#endif
 
     // override exception handler to dump info 
     nn::os::SetUserExceptionHandler(exceptionHandler, exceptionHandlerStack, sizeof(exceptionHandlerStack), &exceptionInfo);
@@ -194,9 +190,7 @@ void runtimePatchMain(void*){
         }
     };
 
-#ifndef NDEBUG
     taskQueue->push(new std::unique_ptr<skyline::utils::Task>(initHashesTask));
-#endif
 
     //smcWriteAddress32(reinterpret_cast<void*>(text + 0x012775C8), 0x26000014); // NOP
     //smcWriteAddress32(reinterpret_cast<void*>(text + 0x012775B0), 0x1F2003D5); 
